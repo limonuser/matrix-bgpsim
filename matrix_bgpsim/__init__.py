@@ -163,7 +163,8 @@ class RMatrix:
         elif isinstance(excluded, (Set, Dict)):
             excluded_check = lambda item: item in excluded
         elif isinstance(excluded, Iterable) and not isinstance(excluded, str):
-            excluded_check = lambda item: item in set(excluded)
+            excluded_set = set(excluded) # build once, also works for one-shot iterators
+            excluded_check = lambda item: item in excluded_set
         else:
             assert isinstance(excluded, Callable), \
                 f"excluded should be Callable or container for membership check: received {type(excluded)}"
