@@ -644,6 +644,7 @@ class RMatrix:
                         break
                 if next_hop is not None:
                     next_hop[state <= 0b00_111111] = -1
+                    next_hop.fill_diagonal_(-1) # no next hop to itself, same as CPU backend
                 # TODO (future): write a custom CUDA kernel to reduce the mask tensor here
                 # TODO (future): fine-grained early stop mechanism
             return state.cpu().numpy(), next_hop.cpu().numpy() if next_hop is not None else None
@@ -744,6 +745,7 @@ class RMatrix:
                         break
                 if next_hop is not None:
                     next_hop[state <= 0b00_111111] = -1
+                    cp.fill_diagonal(next_hop, -1) # no next hop to itself, same as CPU backend
                 return state.get(), next_hop.get() if next_hop is not None else None
 
             return runner
