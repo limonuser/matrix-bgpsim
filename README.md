@@ -32,6 +32,7 @@
     -   [Topology Compression](#topology-compression)
     -   [One-Byte Encoding](#one-byte-encoding)
     -   [Matrix Operations](#matrix-operations)
+-   [Testing](#testing)
 -   [Contributors](#contributors)
 -   [Contact](#contact)
 
@@ -224,7 +225,7 @@ The full API reference and usage guide are available at 👉 https://matrix-bgps
 
 * Highest local preference: routes from customers are preferred over peers, which in turn are preferred over providers.
 * Shortest AS path: among routes with equal local preference, the path with fewer AS hops is chosen.
-* Random tie-breaking: if multiple routes remain equivalent, the one with smallest ASN is selected (looks random).
+* Random tie-breaking: if multiple routes remain equivalent, the one whose next-hop AS appears first in the input AS relationships is selected (looks random). Reordering the input lines can therefore change which of the equivalent paths is chosen.
 
 The valley-free constraint is also enforced: routes learned from a peer or provider are only propagated to customers, preventing "valley" paths in the network.
 
@@ -298,6 +299,17 @@ This encoding allows `matrix-bgpsim` to turn complex BGP iterations into highly 
     - Highly vectorized using NumPy, PyTorch or CuPy backends.
     - Efficient next-hop tracking allows fast path reconstruction on demand.
     - Matrix operations reduce BGP propagation to bitwise and arithmetic operations, maximizing speed and memory efficiency.
+
+## Testing
+
+The tests in `tests/` run small random topologies on the CPU backend and compare every route with the route-propagation simulator in `benchmark/correctness_test.py`. They take a few seconds and need no GPU or CAIDA data:
+
+```bash
+pip install . pytest tqdm
+python -m pytest tests/
+```
+
+The full-scale benchmark and correctness check on sampled CAIDA topologies is in `benchmark/benchmark.py`.
 
 ## Contributors
 
